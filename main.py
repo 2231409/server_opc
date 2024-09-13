@@ -34,20 +34,30 @@ async def main():
     idx = await server.register_namespace(uri)
 
     async def func(parent_nodeid):
-        parent = await server.get_node(parent_nodeid)
+        parent = server.get_node(parent_nodeid)
         noeud_vert = await parent.get_child(["2:Vert"])
-        noeud_vert.write_value(False)
+        await noeud_vert.write_value(False)
 
         noeud_blue = await parent.get_child(["2:Blue"])
-        noeud_blue.write_value(False)
+        await noeud_blue.write_value(False)
 
         noeud_rouge = await parent.get_child(["2:Rouge"])
-        noeud_rouge.write_value(False)
+        await noeud_rouge.write_value(False)
 
+    async def func_allume(parent_nodeid):
+        parent = server.get_node(parent_nodeid)
+        noeud_vert_allume = await parent.get_child(["2:Vert"])
+        await noeud_vert_allume.write_value(True)
+
+        noeud_blue_allume = await parent.get_child(["2:Blue"])
+        await noeud_blue_allume.write_value(True)
+
+        noeud_rouge_allume = await parent.get_child(["2:Rouge"])
+        await noeud_rouge_allume.write_value(True)
 
 
     #Ajout du noeud
-    LED1 = await server.nodes.objects.add_object(idx, "Machine")
+    LED1 = await server.nodes.objects.add_object(idx, "LED1")
     vert = await LED1.add_variable(idx, "Vert", False)
     await vert.set_writable()
     bleu = await LED1.add_variable(idx, "Blue", False)
@@ -55,6 +65,7 @@ async def main():
     rouge = await LED1.add_variable(idx, "Rouge", False)
     await rouge.set_writable()
     methode = await LED1.add_method(idx, "methode", func)
+    methode_lumiere_allume = await LED1.add_method(idx, "methode_lumiere_allume", func_allume)
 
 
     # starting!
